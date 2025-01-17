@@ -1,0 +1,27 @@
+{
+  "name": "openscad-wasm",
+  "version": "1.0.0",
+  "description": "WASM build of Openscad",
+  "main": "build/openscad.wasm.js",
+  "files": [
+    "build"
+  ],
+  "directories": {
+    "example": "example",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "keywords": [
+    "OpenSCAD",
+    "3D",
+    "WASM"
+  ],
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openscad/openscad-wasm.git"
+  },
+  "license": "GPL-2.0-or-later"
+}

@@ -1,22 +1,22 @@
-ENV ::= release
-PTHREAD ::= 0
-BUILDKIT ::= 0
+ENV := release
+PTHREAD := 0
+BUILDKIT := 0
 EMSCRIPTEN_FLAGS := -fexceptions
 
 ifeq ($(strip $(ENV)),debug)
-		CMAKE_BUILD_TYPE := Debug
-		MESON_BUILD_TYPE := debug
-		EMSCRIPTEN_FLAGS += -g -O0
+	CMAKE_BUILD_TYPE := Debug
+	MESON_BUILD_TYPE := debug
+	EMSCRIPTEN_FLAGS += -g -O0
 else ifeq ($(strip $(ENV)),release)
-		CMAKE_BUILD_TYPE := Release
-		MESON_BUILD_TYPE := release
-		EMSCRIPTEN_FLAGS += -O3
+	CMAKE_BUILD_TYPE := Release
+	MESON_BUILD_TYPE := release
+	EMSCRIPTEN_FLAGS += -O3
 else ifeq ($(strip $(ENV)),minsize)
-		CMAKE_BUILD_TYPE := MinSizeRel
-		MESON_BUILD_TYPE := minsize
-		EMSCRIPTEN_FLAGS += -Os
+	CMAKE_BUILD_TYPE := MinSizeRel
+	MESON_BUILD_TYPE := minsize
+	EMSCRIPTEN_FLAGS += -Os
 else
-		$(error Bad ENV, must be release, minsize or debug)
+	$(error Bad ENV, must be release, minsize or debug)
 endif
 
 ifeq ($(PTHREAD),1)

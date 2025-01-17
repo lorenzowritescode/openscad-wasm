@@ -1,6 +1,6 @@
 # OpenSCAD WASM Port
 
-A full port of OpenSCAD to WASM. 
+A full port of OpenSCAD to WASM.
 
 This project cross compiles all of the project dependencies and created a headless OpenSCAD WASM module.
 
@@ -9,6 +9,7 @@ This project cross compiles all of the project dependencies and created a headle
 Make sure that you have the following installed:
 
 - Make
+- wget
 - Docker
 - Deno
 
@@ -22,7 +23,7 @@ Or for specific steps:
 
 ```
 # Generate the library files
-make libs 
+make libs
 
 # Build the project
 make build
