@@ -1,5 +1,5 @@
 {
-  "name": "@lorenzowritescode/openscad-wasm",
+  "name": "openscad-wasm-prebuilt",
   "version": "1.0.0",
   "description": "WASM build of Openscad",
   "main": "build/openscad.wasm.js",
@@ -21,7 +21,7 @@
   "author": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openscad/openscad-wasm.git"
+    "url": "git+https://github.com/lorenzowritescode/openscad-wasm.git"
   },
   "license": "GPL-2.0-or-later"
 }
