@@ -1,5 +1,5 @@
 {
-  "name": "openscad-wasm",
+  "name": "@lorenzowritescode/openscad-wasm",
   "version": "1.0.0",
   "description": "WASM build of Openscad",
   "main": "build/openscad.wasm.js",
