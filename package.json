@@ -1,8 +1,8 @@
 {
   "name": "openscad-wasm-prebuilt",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "WASM build of Openscad",
-  "main": "build/openscad.wasm.js",
+  "main": "build/openscad.js",
   "files": [
     "build"
   ],
