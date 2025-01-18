@@ -1,34 +1,40 @@
-import { join, dirname } from "https://deno.land/std/path/mod.ts";
-import { OpenSCAD, FS } from "../build/openscad.js";
+import { join, dirname } from "path";
+import { readFile, readdir } from "fs/promises";
+import type { OpenSCAD } from "../dist/openscad.js";
 
 export async function loadTestFiles(instance: OpenSCAD, directory: string) {
   const fileMap = new Map<string, string>();
+  await readFiles(fileMap, directory, ".");
 
-  await readFiles(fileMap, directory, '.');
-
-  for(const [from, to] of fileMap){
-    const content = await Deno.readFile(from);
+  for (const [from, to] of fileMap) {
+    const content = await readFile(from);
     ensureDirExists(instance.FS, dirname(to));
     instance.FS.writeFile(to, content);
   }
 }
 
-function ensureDirExists(fs: FS, path: string){
-  try{
+function ensureDirExists(fs: OpenSCAD["FS"], path: string) {
+  try {
     fs.stat(path);
-  }catch(e: unknown){
+  } catch (e: unknown) {
     ensureDirExists(fs, dirname(path));
     fs.mkdir(path);
   }
 }
 
-async function readFiles(map: Map<string, string>, root: string, location: string) {
+async function readFiles(
+  map: Map<string, string>,
+  root: string,
+  location: string
+) {
   const cwd = join(root, location);
-  for await (const testFile of Deno.readDir(cwd)) {
-    if(testFile.isDirectory){
-      await readFiles(map, root, join(location, testFile.name));
-    }else{
-      map.set(join(cwd, testFile.name), join('/', location, testFile.name))
+  const entries = await readdir(cwd, { withFileTypes: true });
+
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      await readFiles(map, root, join(location, entry.name));
+    } else {
+      map.set(join(cwd, entry.name), join("/", location, entry.name));
     }
   }
 }
