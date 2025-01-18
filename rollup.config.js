@@ -1,18 +1,16 @@
 import typescript from "@rollup/plugin-typescript";
-import copy from "rollup-plugin-copy";
+import { wasm } from "@rollup/plugin-wasm";
 
-const bundle = (name) => ({
-  input: `src/${name}.ts`,
+export default {
+  input: `src/openscad.ts`,
   output: {
-    file: `dist/${name}.js`,
-    format: "esm",
+    file: `dist/openscad.js`,
   },
   plugins: [
     typescript({ tsconfig: "./tsconfig.json" }),
-    copy({
-      targets: [{ src: "../wasm/openscad.wasm*", dest: "dist" }],
+    wasm({
+      targetEnv: "browser",
+      fileName: "openscad.wasm",
     }),
   ],
-});
-
-export default [bundle("openscad")];
+};

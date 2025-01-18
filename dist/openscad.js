@@ -14,17 +14,21 @@ var Module=moduleArg;var readyPromiseResolve,readyPromiseReject;var readyPromise
 })();
 
 async function initWasm(options = {}) {
-    const module = {
+    ({
         noInitialRun: true,
         ...options,
-    };
-    // Initialize the module
-    const instance = await OpenSCAD(module);
-    // Wait for runtime initialization
-    await new Promise((resolve) => {
-        instance.onRuntimeInitialized = () => resolve();
     });
-    return instance;
+    const wasmModule = await OpenSCAD({
+        noInitialRun: true,
+    });
+    console.log(wasmModule);
+    // // Initialize the module
+    // const instance = await wasm(module);
+    // // Wait for runtime initialization
+    // await new Promise<void>((resolve) => {
+    //   wasmModule.onRuntimeInitialized = () => resolve();
+    // });
+    return wasmModule;
 }
 
 async function createOpenSCAD(options = {}) {
