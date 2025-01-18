@@ -1,8 +1,8 @@
 libs
-build
 tests/**/out.stl
 .vscode
 runtime/dist
+runtime/wasm
 node_modules
 res
 !res/fonts

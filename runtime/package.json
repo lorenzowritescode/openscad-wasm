@@ -1,14 +1,27 @@
 {
-    "name": "openscad-runtime",
-    "description": "OpenSCAD WASM Runtime Extensions",
-    "module": "openscad.runtime.js",
-    "scripts": {
-        "build": "rollup --config rollup.config.js"
-    },
-    "devDependencies": {
-        "@rollup/plugin-typescript": "^8.3.1",
-        "glob": "^7.2.0",
-        "rollup": "^2.69.2",
-        "typescript": "^4.6.2"
+  "name": "openscad-wasm",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/openscad.js",
+  "types": "./dist/openscad.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/openscad.d.ts",
+      "import": "./dist/openscad.js"
     }
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^12.1.2",
+    "rollup": "^4.30.1",
+    "rollup-plugin-copy": "^3.5.0",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.3"
+  }
 }

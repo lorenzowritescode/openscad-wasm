@@ -68,12 +68,12 @@ runtime/node_modules:
 	cd runtime; npm install
 
 build/openscad.wasm.js: .image$(VARIANT)-$(ENV).make
-	mkdir -p build
+	mkdir -p runtime/wasm
 	docker rm -f tmpcpy
 	docker run --name tmpcpy $(DOCKER_TAG_OPENSCAD)
-	docker cp tmpcpy:/build/openscad.js build/openscad.wasm.js
-	docker cp tmpcpy:/build/openscad.wasm build/
-	docker cp tmpcpy:/build/openscad.wasm.map build/ || true
+	docker cp tmpcpy:/build/openscad.js runtime/wasm/openscad.wasm.js
+	docker cp tmpcpy:/build/openscad.wasm runtime/wasm/
+	docker cp tmpcpy:/build/openscad.wasm.map runtime/wasm/ || true
 	docker rm tmpcpy
 
 .image$(VARIANT)-$(ENV).make: .base-image$(VARIANT)-$(ENV).make Dockerfile

@@ -1,6 +1,5 @@
 import typescript from "@rollup/plugin-typescript";
-import embedFile from "./plugins/embed-file";
-import typeReference from "./plugins/type-reference";
+import copy from "rollup-plugin-copy";
 
 const bundle = (name) => ({
   input: `src/${name}.ts`,
@@ -9,14 +8,11 @@ const bundle = (name) => ({
     format: "esm",
   },
   plugins: [
-    embedFile(), 
     typescript({ tsconfig: "./tsconfig.json" }),
-    typeReference(`src/${name}.ts`, name),
-  ]
+    copy({
+      targets: [{ src: "../wasm/openscad.wasm*", dest: "dist" }],
+    }),
+  ],
 });
 
-export default [
-  bundle("openscad"),
-  bundle("openscad.fonts"),
-  bundle("openscad.mcad")
-];
+export default [bundle("openscad")];

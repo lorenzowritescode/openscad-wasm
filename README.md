@@ -1,8 +1,6 @@
 # OpenSCAD WASM Port
 
-A full port of OpenSCAD to WASM.
-
-This project cross compiles all of the project dependencies and created a headless OpenSCAD WASM module.
+A full port of OpenSCAD to WASM, providing a modern TypeScript API for rendering OpenSCAD models directly in the browser or Node.js.
 
 ## Setup
 
@@ -11,97 +9,131 @@ Make sure that you have the following installed:
 - Make
 - wget
 - Docker
-- Deno
+- Node.js 18+
 
 To build the project:
 
-```
+```bash
+# Build the WASM module and runtime
 make all
-```
 
-Or for specific steps:
-
-```
-# Generate the library files
-make libs
-
-# Build the project
-make build
-
-# Build the project in debug mode
-make ENV=Debug build
+# Build just the runtime package
+cd runtime && npm run build
 ```
 
 ## Usage
 
-There is an example project in the example folder. Run it using:
+Install the package:
 
-```
-cd example
-deno run --allow-net --allow-read server.ts
-
-# or
-
-make example
+```bash
+npm install openscad-wasm
 ```
 
-There are also automated tests that can be run using:
+Basic usage:
+
+```typescript
+import { createOpenSCAD } from "openscad-wasm";
+
+// Create an OpenSCAD instance
+const openscad = await createOpenSCAD();
+
+// Render some OpenSCAD code to STL
+const stl = await openscad.renderToStl(`
+  cube([10, 10, 10]);
+`);
+
+// Do something with the STL (e.g., save to file, display in viewer)
+console.log(stl);
+```
+
+Advanced usage with direct access to the WASM module:
+
+```typescript
+import { createOpenSCAD } from "openscad-wasm";
+
+const openscad = await createOpenSCAD({
+  // Optional callbacks for stdout/stderr
+  print: console.log,
+  printErr: console.error,
+});
+
+// Get direct access to the WASM module
+const instance = openscad.getInstance();
+
+// Use the filesystem API directly
+instance.FS.writeFile("/input.scad", "cube([20, 20, 20]);");
+instance.callMain(["/input.scad", "--enable=manifold", "-o", "output.stl"]);
+const output = instance.FS.readFile("/output.stl", { encoding: "utf8" });
+```
+
+## API Reference
+
+### createOpenSCAD(options?)
+
+Creates a new OpenSCAD instance.
+
+```typescript
+interface InitOptions {
+  noInitialRun?: boolean; // Prevent automatic main() call
+  print?: (text: string) => void; // stdout callback
+  printErr?: (text: string) => void; // stderr callback
+}
+
+interface OpenSCADInstance {
+  // Render OpenSCAD code to STL
+  renderToStl(code: string): Promise<string>;
+
+  // Get the underlying WASM module
+  getInstance(): OpenSCAD;
+}
+```
+
+### OpenSCAD Instance
+
+The underlying WASM module provides:
+
+```typescript
+interface OpenSCAD {
+  // Run OpenSCAD with command line arguments
+  callMain(args: Array<string>): number;
+
+  // Emscripten filesystem API
+  FS: {
+    writeFile(path: string, data: string | ArrayBufferView): void;
+    readFile(
+      path: string,
+      opts?: { encoding: "utf8" | "binary" }
+    ): string | Uint8Array;
+    mkdir(path: string): void;
+    rmdir(path: string): void;
+    unlink(path: string): void;
+    // ... and more
+  };
+}
+```
+
+For more information on the filesystem API, see the [Emscripten File System API](https://emscripten.org/docs/api_reference/Filesystem-API.html).
+
+## Development
+
+The project is structured as follows:
 
 ```
-cd tests
-deno test --allow-read --allow-write
+runtime/
+  src/
+    api/      # High-level TypeScript API
+    core/     # WASM initialization
+    types/    # TypeScript definitions
+  wasm/     # Built WASM module
+  dist/     # Built package
+```
 
-# or
+To develop:
 
+```bash
+# Watch mode for runtime package
+cd runtime && npm run dev
+
+# Run tests
 make test
 ```
-
-## API
-
-The project is an ES6 module. Simply import the module:
-
-```ts
-<html>
-<head></head>
-<body>
-
-<script type="module">
-
-import { InitOpenSCAD } from "./openscad.js";
-
-// OPTIONAL: add fonts to the FS
-import { addFonts } from "./openscad.fonts.js";
-
-// OPTIONAL: add MCAD library to the FS
-import { addMCAD } from "./openscad.mcad.js";
-
-const filename = "cube.stl";
-
-// Instantiate the application
-const instance = await InitOpenSCAD({noInitialRun: true});
-
-// Write a file to the filesystem
-instance.FS.writeFile("/input.scad", `cube(10);`); // OpenSCAD script to generate a 10mm cube
-
-// Run like a command-line program with arguments
-instance.callMain(["/input.scad", "--enable=manifold", "-o", filename]); // manifold is faster at rendering
-
-// Read the output 3D-model into a JS byte-array
-const output = instance.FS.readFile("/"+filename);
-
-// Generate a link to output 3D-model and download the output STL file
-const link = document.createElement("a");
-link.href = URL.createObjectURL(
-new Blob([output], { type: "application/octet-stream" }), null);
-link.download = filename;
-document.body.append(link);
-link.click();
-link.remove();
-
-</script>
-
-</body>
-</html>
-```
-
-For more information on reading and writing files check out the [Emscripten File System API](https://emscripten.org/docs/api_reference/Filesystem-API.html).
