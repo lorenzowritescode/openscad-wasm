@@ -67,7 +67,7 @@ The project is an ES6 module. Simply import the module:
 
 <script type="module">
 
-import OpenSCAD from "./openscad.js";
+import { InitOpenSCAD } from "./openscad.js";
 
 // OPTIONAL: add fonts to the FS
 import { addFonts } from "./openscad.fonts.js";
@@ -78,7 +78,7 @@ import { addMCAD } from "./openscad.mcad.js";
 const filename = "cube.stl";
 
 // Instantiate the application
-const instance = await OpenSCAD({noInitialRun: true});
+const instance = await InitOpenSCAD({noInitialRun: true});
 
 // Write a file to the filesystem
 instance.FS.writeFile("/input.scad", `cube(10);`); // OpenSCAD script to generate a 10mm cube

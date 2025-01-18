@@ -29,7 +29,7 @@ declare module globalThis {
 
 let wasmModule: string;
 
-async function OpenSCAD(options?: InitOptions): Promise<OpenSCAD> {
+export async function InitOpenSCAD(options?: InitOptions): Promise<OpenSCAD> {
   if (!wasmModule) {
     const url = new URL(`./openscad.wasm.js`, import.meta.url).href;
     const request = await fetch(url);
@@ -52,5 +52,3 @@ async function OpenSCAD(options?: InitOptions): Promise<OpenSCAD> {
 
   return module as unknown as OpenSCAD;
 }
-
-export default OpenSCAD;
