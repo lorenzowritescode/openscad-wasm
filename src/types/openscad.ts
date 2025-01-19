@@ -23,4 +23,5 @@ export interface OpenSCAD {
   noInitialRun?: boolean;
   print?: (text: string) => void;
   printErr?: (text: string) => void;
+  onerror?: (e: any) => void;
 }

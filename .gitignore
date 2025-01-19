@@ -9,3 +9,4 @@ res
 *.make
 .oci.*
 dist
+.DS_Store
