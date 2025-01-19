@@ -9,4 +9,5 @@ res
 *.make
 .oci.*
 dist
+wasm
 .DS_Store
