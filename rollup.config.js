@@ -9,8 +9,8 @@ export default {
   plugins: [
     typescript({ tsconfig: "./tsconfig.json" }),
     wasm({
-      targetEnv: "browser",
-      fileName: "openscad.wasm",
+      targetEnv: "auto-inline",
+      maxFileSize: 0,
     }),
   ],
 };

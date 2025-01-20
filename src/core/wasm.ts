@@ -1,4 +1,5 @@
 import wasmWrapper from "../../wasm/openscad.wasm.js";
+import wasm from "../../wasm/openscad.wasm";
 
 import type { InitOptions, OpenSCAD } from "../types/openscad";
 
@@ -21,7 +22,8 @@ export async function initWasm(options: InitOptions = {}): Promise<OpenSCAD> {
     ...options,
   };
 
-  const wasmModule = await wasmWrapper(module);
+  const { instance } = await wasm(module);
+  const wasmModule = await wasmWrapper(instance);
 
   return wasmModule as OpenSCAD;
 }

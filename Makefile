@@ -47,26 +47,31 @@ clean:
 	rm -rf libs
 	rm -rf build
 	rm -rf .oci.*
-	rm -rf dist
+	rm -rf dist node_modules
+
+test:
+	cd tests; deno test --allow-read --allow-write
 
 .PHONY: example
 example:
 	cd example; deno run --allow-net --allow-read server.ts
 
 .PHONY: build
-build: js
+build: build/openscad.wasm.js build/openscad.fonts.js
 
-js: wasm
-	npm install
+build/openscad.fonts.js: node_modules src/**/* res
 	npm run build
 
-wasm: .image$(VARIANT)-$(ENV).make
-	mkdir -p runtime/wasm
+node_modules:
+	npm install
+
+build/openscad.wasm.js: .image$(VARIANT)-$(ENV).make
+	mkdir -p wasm
 	docker rm -f tmpcpy
 	docker run --name tmpcpy $(DOCKER_TAG_OPENSCAD)
-	docker cp tmpcpy:/build/openscad.js runtime/wasm/openscad.wasm.js
-	docker cp tmpcpy:/build/openscad.wasm runtime/wasm/
-	docker cp tmpcpy:/build/openscad.wasm.map runtime/wasm/ || true
+	docker cp tmpcpy:/build/openscad.js wasm/openscad.wasm.js
+	docker cp tmpcpy:/build/openscad.wasm wasm/
+	docker cp tmpcpy:/build/openscad.wasm.map wasm/ || true
 	docker rm tmpcpy
 
 .image$(VARIANT)-$(ENV).make: .base-image$(VARIANT)-$(ENV).make Dockerfile
