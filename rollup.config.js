@@ -19,6 +19,10 @@ export default {
       maxFileSize: 0,
     }),
     {
+      /*
+      This is required because for some inscrutable reason, the contents of the function 
+      findWasmBinary would break the compilation of a project that uses this as a dependency.
+      */
       name: "patch-findWasmBinary-function",
       renderChunk(code) {
         const replacementFunctionCode = `
