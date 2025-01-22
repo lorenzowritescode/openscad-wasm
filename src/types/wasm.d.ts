@@ -4,3 +4,7 @@ declare module "*.wasm.js" {
   const createModule: (options?: Partial<OpenSCAD>) => Promise<OpenSCAD>;
   export default createModule;
 }
+
+declare module "*.wasm" {
+  export default function (): Promise<WebAssembly.Module>;
+}

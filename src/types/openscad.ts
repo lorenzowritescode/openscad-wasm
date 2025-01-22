@@ -24,4 +24,9 @@ export interface OpenSCAD {
   print?: (text: string) => void;
   printErr?: (text: string) => void;
   onerror?: (e: any) => void;
+  instantiateWasm: (
+    info: any,
+    receiveInstance: (instance: any) => void
+  ) => void;
+  noExitRuntime?: boolean;
 }

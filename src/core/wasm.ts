@@ -1,5 +1,5 @@
-import wasmWrapper from "../../wasm/openscad.wasm.js";
 import wasm from "../../wasm/openscad.wasm";
+import wasmWrapper from "../../wasm/openscad.wasm.js";
 
 import type { InitOptions, OpenSCAD } from "../types/openscad";
 
@@ -14,16 +14,21 @@ export async function initWasm(options: InitOptions = {}): Promise<OpenSCAD> {
     }
   };
 
+  const wasmBinary = await wasm();
+
   const module: Partial<OpenSCAD> = {
     noInitialRun: true,
+    noExitRuntime: true,
     print: options.print || defaultPrint,
     printErr: options.printErr || defaultPrintErr,
     onerror: (e: any) => console.error("[OpenSCAD Error]:", e),
+    instantiateWasm(imports, receiveInstance) {
+      WebAssembly.instantiate(wasmBinary, imports).then(receiveInstance);
+    },
     ...options,
   };
 
-  const { instance } = await wasm(module);
-  const wasmModule = await wasmWrapper(instance);
+  const openscadWasm = await wasmWrapper(module);
 
-  return wasmModule as OpenSCAD;
+  return openscadWasm as OpenSCAD;
 }
